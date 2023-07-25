@@ -7,9 +7,13 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(eigen3_cmake_module REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(px4_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(rclcpp REQUIRED)
+
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -22,5 +26,39 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+include_directories(include)
+
+# define a library target called my_value_converter_library
+add_library(frtl_2023_drone_lib SHARED
+  src/Drone.cpp
+)
+
+ament_target_dependencies(frtl_2023_drone_lib
+  Eigen3
+  px4_msgs
+  rclcpp
+  tf2
+)
+
+ament_export_targets(frtl_2023_drone_lib HAS_LIBRARY_TARGET)
+
+ament_export_dependencies(Eigen3 px4_msgs rclcpp tf2)
+ 
+# install the include/my_cpp_library directory to the install/include/my_cpp_library
+install(
+  DIRECTORY include/drone
+  DESTINATION include
+  FILES_MATCHING PATTERN "*.hpp"
+)
+ 
+install(
+  TARGETS frtl_2023_drone_lib
+  EXPORT frtl_2023_drone_lib
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
 
 ament_package()
