@@ -29,7 +29,7 @@ Drone::Drone() {
 	rclcpp::QoS qos_profile(10);
 	qos_profile.best_effort();
 
-	std::string vehicle_id_prefix{};
+	std::string vehicle_id_prefix = "";
 
 	// Essa parte será útil para múltiplos drones
 	//if (this->vehicle_id_ != 0) {
@@ -270,6 +270,25 @@ Drone::Drone() {
 
 }
 
+Drone::~Drone() {
+	this->destroy();
+}
+
+void Drone::destroy()
+{
+  if (this->exec_) {
+    // this is the type of code you write just before the velociraptors attack
+    for (int i = 0; i < 42; i++) {
+      this->exec_->cancel();
+      usleep(100);  // sleep a bit to force a thread context switch
+    }
+    // we've asked it to shut down many times, so clearly now we're good lol
+    this->exec_ = nullptr;
+    rclcpp::shutdown();
+    this->spin_thread_.join();
+  }
+}
+
 DronePX4::ARMING_STATE Drone::getArmingState() {
 	return this->arming_state_;
 }
@@ -381,14 +400,34 @@ void Drone::takeoff() {
 		this->alt_ + 5.0f // Altitude (meters)
 	);  
 }
-
-void Drone::land() {
-
-}
 */
 
+void Drone::land()
+{
+  this->sendCommand(
+    px4_msgs::msg::VehicleCommand::VEHICLE_CMD_NAV_LAND,
+    this->target_system_,
+    this->target_component_,
+    this->source_system_,
+    this->source_component_,
+    this->confirmation_,
+    this->from_external_,
+    0.1f,
+    0,
+    0,
+    1.57, // orientation
+	0.0f,
+	0.0f  
+	);
+}
+
 void Drone::setLocalPosition(float x, float y, float z, float yaw) {
+
+	this->setOffboardControlMode(DronePX4::CONTROLLER_TYPE::POSITION);
+
 	px4_msgs::msg::TrajectorySetpoint msg;
+
+	msg.timestamp = this->px4_node_->get_clock()->now().nanoseconds() / 1000;
 
 	msg.position[0] = x;
 	msg.position[1] = y;
@@ -420,9 +459,9 @@ void Drone::setLocalPositionSync(
 	DronePX4::CONTROLLER_TYPE controller_type)
 {
 	while (rclcpp::ok()) {
-		setOffboardControlMode(controller_type);
-		setLocalPosition(x, y, z, yaw);
-		setAirSpeed(airspeeed);
+		this->setOffboardControlMode(controller_type);
+		this->setLocalPosition(x, y, z, yaw);
+		this->setAirSpeed(airspeeed);
 
 		auto currentPosition = getLocalPosition();
 		auto diff = currentPosition - Eigen::Vector3d({x,y,z});
@@ -524,25 +563,25 @@ void Drone::sendCommand(
 	float param4, float param5, float param6,
 	float param7)
 {
-	px4_msgs::msg::VehicleCommand msg_vehicle_command;
-	msg_vehicle_command.timestamp = this->px4_node_->get_clock()->now().nanoseconds() / 1000.0;
-	msg_vehicle_command.command = command;
+	px4_msgs::msg::VehicleCommand msg;
+	msg.timestamp = this->px4_node_->get_clock()->now().nanoseconds() / 1000.0;
+	msg.command = command;
 
-	msg_vehicle_command.param1 = param1;
-	msg_vehicle_command.param2 = param2;
-	msg_vehicle_command.param3 = param3;
-	msg_vehicle_command.param4 = param4;
-	msg_vehicle_command.param5 = param5;
-	msg_vehicle_command.param6 = param6;
-	msg_vehicle_command.param7 = param7;
-	msg_vehicle_command.confirmation = confirmation;
-	msg_vehicle_command.source_system = source_system;
-	msg_vehicle_command.target_system = target_system;
-	msg_vehicle_command.target_component = target_component;
-	msg_vehicle_command.from_external = from_external;
-	msg_vehicle_command.source_component = source_component;
+	msg.param1 = param1;
+	msg.param2 = param2;
+	msg.param3 = param3;
+	msg.param4 = param4;
+	msg.param5 = param5;
+	msg.param6 = param6;
+	msg.param7 = param7;
+	msg.confirmation = confirmation;
+	msg.source_system = source_system;
+	msg.target_system = target_system;
+	msg.target_component = target_component;
+	msg.from_external = from_external;
+	msg.source_component = source_component;
 
-	this->vehicle_command_pub_->publish(msg_vehicle_command);
+	this->vehicle_command_pub_->publish(msg);
 }
 
 void Drone::setSpeed(float speed, bool is_ground_speed)
@@ -560,4 +599,12 @@ void Drone::setSpeed(float speed, bool is_ground_speed)
     speed_type,  // Speed type (0=Airspeed, 1=Ground Speed, 2=Climb Speed, 3=Descent Speed)
     speed,       // Speed (-1 indicates no change, -2 indicates return to default vehicle speed)
     -1.0f);      // Throttle (-1 indicates no change, -2 indicates return to default throttle value)
+}
+
+double Drone::getTime() {
+	return this->px4_node_->get_clock()->now().seconds();
+}
+
+void Drone::log(const std::string &info) {
+	RCLCPP_INFO(this->px4_node_->get_logger(), info.c_str());
 }

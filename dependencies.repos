@@ -15,3 +15,7 @@ repositories:
     type: git
     url: https://github.com/nlohmann/json.git
     version: develop
+  fsm:
+    type: git
+    url: https://github.com/Equipe-eVTOL-ITA/fsm.git
+    version: main

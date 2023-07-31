@@ -102,6 +102,8 @@ class Drone
 {
 public:
 	Drone();
+	~Drone();
+
 
 	/*
 		Getters
@@ -135,7 +137,7 @@ public:
 
 	//void takeoff();
 
-	//void land();
+	void land();
 
 	void setLocalPosition(float x, float y, float z, float yaw);
 
@@ -159,6 +161,10 @@ public:
 	void toOffboardSync();
 	
 	void setOffboardMode();
+
+	double getTime();
+
+	void log(const std::string& info);
 	
 private:
 	/// Send command to PX4
@@ -187,6 +193,8 @@ private:
 	/// \param[in] speed Speed to set in m/s
 	/// \param[in] is_ground_speed True if the speed is a ground speed, false if it is an air speed
 	void setSpeed(float speed, bool is_ground_speed);
+
+	void destroy();
 
 	// Orchestration
 	std::thread spin_thread_;

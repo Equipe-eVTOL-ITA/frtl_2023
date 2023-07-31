@@ -11,6 +11,8 @@
 
   <depend>frtl_2023_drone</depend>
   <depend>fsm</depend>
+  <depend>Eigen3</depend>
+  <depend>rclcpp</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
