@@ -27,13 +27,8 @@ namespace DronePX4
 {
 enum ARMING_STATE
 {
-  	INIT = 0,
-  	STANDBY = 1,
-  	ARMED = 2,
-  	STANDBY_ERROR = 3,
-  	SHUTTEDDOWN = 4,
-  	IN_AIR_RESTORE = 5,
-  	MAX = 6
+	DISARMED = 1,
+	ARMED = 2
 };
 
 enum ARM_DISARM_REASON
@@ -219,7 +214,7 @@ private:
 
 	// Service clients
 	rclcpp::Node::SharedPtr px4_node_;
-	DronePX4::ARMING_STATE arming_state_{DronePX4::ARMING_STATE::MAX};
+	DronePX4::ARMING_STATE arming_state_{DronePX4::ARMING_STATE::DISARMED};
 	DronePX4::FLIGHT_MODE flight_mode_{DronePX4::FLIGHT_MODE::UNKNOWN_MODE};
 	DronePX4::ARM_DISARM_REASON arm_reason_;
 	DronePX4::ARM_DISARM_REASON disarm_reason_;

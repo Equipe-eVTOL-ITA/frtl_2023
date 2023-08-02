@@ -126,29 +126,14 @@ Drone::Drone() {
 		}
 
 		switch (msg->arming_state) {
-			case px4_msgs::msg::VehicleStatus::ARMING_STATE_INIT:
-			this->arming_state_ = DronePX4::ARMING_STATE::INIT;
-			break;
-			case px4_msgs::msg::VehicleStatus::ARMING_STATE_STANDBY:
-			this->arming_state_ = DronePX4::ARMING_STATE::STANDBY;
-			break;
 			case px4_msgs::msg::VehicleStatus::ARMING_STATE_ARMED:
 			this->arming_state_ = DronePX4::ARMING_STATE::ARMED;
 			break;
-			case px4_msgs::msg::VehicleStatus::ARMING_STATE_STANDBY_ERROR:
-			this->arming_state_ = DronePX4::ARMING_STATE::STANDBY_ERROR;
-			break;
-			case px4_msgs::msg::VehicleStatus::ARMING_STATE_SHUTDOWN:
-			this->arming_state_ = DronePX4::ARMING_STATE::SHUTTEDDOWN;
-			break;
-			case px4_msgs::msg::VehicleStatus::ARMING_STATE_IN_AIR_RESTORE:
-			this->arming_state_ = DronePX4::ARMING_STATE::IN_AIR_RESTORE;
-			break;
-			case px4_msgs::msg::VehicleStatus::ARMING_STATE_MAX:
-			this->arming_state_ = DronePX4::ARMING_STATE::MAX;
+			case px4_msgs::msg::VehicleStatus::ARMING_STATE_DISARMED:
+			this->arming_state_ = DronePX4::ARMING_STATE::DISARMED;
 			break;
 			default:
-			this->arming_state_ = DronePX4::ARMING_STATE::MAX;
+			this->arming_state_ = DronePX4::ARMING_STATE::DISARMED;
 		}
 
 		switch (msg->nav_state) {
@@ -374,7 +359,7 @@ void Drone::disarm() {
 }
 
 void Drone::disarmSync() {
-  	while (getArmingState() != DronePX4::ARMING_STATE::STANDBY && rclcpp::ok()) {
+  	while (getArmingState() != DronePX4::ARMING_STATE::DISARMED && rclcpp::ok()) {
 		this->disarm();
 		usleep(1e5);  // 100 ms
   	}
