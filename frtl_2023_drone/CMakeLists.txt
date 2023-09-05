@@ -12,6 +12,7 @@ find_package(Eigen3 REQUIRED)
 find_package(px4_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(cv_bridge REQUIRED)
 
 
 
@@ -39,11 +40,12 @@ ament_target_dependencies(frtl_2023_drone_lib
   px4_msgs
   rclcpp
   tf2
+  cv_bridge
 )
 
 ament_export_targets(frtl_2023_drone_lib HAS_LIBRARY_TARGET)
 
-ament_export_dependencies(Eigen3 px4_msgs rclcpp tf2)
+ament_export_dependencies(Eigen3 px4_msgs rclcpp tf2 cv_bridge)
  
 # install the include/my_cpp_library directory to the install/include/my_cpp_library
 install(

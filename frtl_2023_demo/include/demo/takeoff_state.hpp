@@ -2,6 +2,8 @@
 #include "drone/Drone.hpp"
 #include <Eigen/Eigen>
 
+#include <opencv2/highgui.hpp>
+
 class TakeoffState : public fsm::State {
 public:
     TakeoffState() : fsm::State() {}
@@ -12,12 +14,12 @@ public:
         if (drone == nullptr) return;
         drone->log("Taking off.");
 
-        Eigen::Vector3d pos = drone->getLocalPosition();
-        this->x_ = pos[0];
-        this->y_ = pos[1];
-
         drone->toOffboardSync();
         drone->armSync();
+        
+        Eigen::Vector3d pos = drone->getLocalPosition();
+        this->initial_x = pos[0];
+        this->initial_y = pos[1];
     }
 
     std::string act(fsm::Blackboard &blackboard) override {
@@ -30,15 +32,21 @@ public:
         if (z == nullptr) return "SEG FAULT";
 
         Eigen::Vector3d pos  = drone->getLocalPosition(),
-                        goal = Eigen::Vector3d({x_,y_,*z});
+                        goal = Eigen::Vector3d({this->initial_x, this->initial_y, *z});
 
         if ((pos-goal).norm() < 0.10)
             return "TAKEOFF COMPLETED";
 
-        drone->setLocalPosition(this->x_, this->y_, *z, 0.0);
+        drone->setLocalPosition(this->initial_x, this->initial_y, *z, 0.0);
+
+        cv_bridge::CvImagePtr cv_ptr = drone->getVerticalImage();
+        cv::Mat edged_image;
+        cv::Canny(cv_ptr->image, edged_image, 100, 200);
+        drone->publish_image("/transformed_vertical_image", edged_image);
+        // drone-> publish
         
         return "";
     }
 
-    float x_, y_;
+    float initial_x, initial_y;
 };

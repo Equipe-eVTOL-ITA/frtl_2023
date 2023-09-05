@@ -7,8 +7,11 @@
 #include <memory>
 #include <thread>
 #include <vector>
+#include <string>
+#include <unordered_map>
 
 #include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/image.hpp>
 
 #include <px4_msgs/msg/vehicle_status.hpp>
 #include <px4_msgs/msg/vtol_vehicle_status.hpp>
@@ -22,6 +25,8 @@
 #include <px4_msgs/msg/airspeed.hpp>
 
 #include <Eigen/Eigen>
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/core.hpp>
 
 namespace DronePX4
 {
@@ -160,6 +165,19 @@ public:
 	double getTime();
 
 	void log(const std::string& info);
+
+	/*
+		Image functions
+	*/
+
+	cv_bridge::CvImagePtr& getHorizontalImage();
+	cv_bridge::CvImagePtr& getVerticalImage();
+
+	void create_image_publisher(const std::string& topic_name);
+	void publish_image(const std::string& topic_name, const cv_bridge::CvImagePtr& cv_ptr);
+	void publish_image(const std::string& topic_name, const cv::Mat& cv_ptr);
+
+
 	
 private:
 	/// Send command to PX4
@@ -212,6 +230,11 @@ private:
 	
 	rclcpp::Subscription<px4_msgs::msg::Airspeed>::SharedPtr vehicle_airspeed_sub_;
 
+	rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr horizontal_camera_sub_;
+
+	rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr vertical_camera_sub_;
+
+
 	// Service clients
 	rclcpp::Node::SharedPtr px4_node_;
 	DronePX4::ARMING_STATE arming_state_{DronePX4::ARMING_STATE::DISARMED};
@@ -232,6 +255,8 @@ private:
 	float current_vel_z_;
 	float ground_speed_;
 	float airspeed_{0};
+	cv_bridge::CvImagePtr horizontal_cv_ptr_;
+	cv_bridge::CvImagePtr vertical_cv_ptr_;
 
 	uint8_t target_component_{1};
 	uint8_t source_system_{255};
@@ -248,6 +273,9 @@ private:
 	float pitch_{0};
 	float yaw_{0};
 
+	std::unordered_map<std::string, rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr> image_publishers_;
+	
+	static std::unordered_map<std::string, std::string> encoding_map_;
 };
 
 

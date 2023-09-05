@@ -253,6 +253,22 @@ Drone::Drone() {
 	this->vehicle_offboard_control_mode_pub_ = this->px4_node_->create_publisher<px4_msgs::msg::OffboardControlMode>(
 		vehicle_id_prefix + "/fmu/in/offboard_control_mode", qos_profile);
 
+	this->vertical_camera_sub_ = this->px4_node_->create_subscription<sensor_msgs::msg::Image>(
+		"/vertical_camera",
+		qos_profile,
+		[this](sensor_msgs::msg::Image::SharedPtr msg) {
+			vertical_cv_ptr_ = cv_bridge::toCvCopy(msg, msg->encoding);
+		}
+	);
+
+	this->horizontal_camera_sub_ = this->px4_node_->create_subscription<sensor_msgs::msg::Image>(
+		"/horizontal_camera",
+		qos_profile,
+		[this](sensor_msgs::msg::Image::SharedPtr msg) {
+			horizontal_cv_ptr_ = cv_bridge::toCvCopy(msg, msg->encoding);
+		}
+	);
+
 }
 
 Drone::~Drone() {
@@ -324,7 +340,6 @@ Eigen::Vector3d Drone::getOrientation() {
 		this->yaw_
 	});
 }
-
 
 void Drone::arm() {
     this->sendCommand(
@@ -448,9 +463,9 @@ void Drone::setLocalPositionSync(
 		this->setLocalPosition(x, y, z, yaw);
 		this->setAirSpeed(airspeeed);
 
-		auto currentPosition = getLocalPosition();
-		auto diff = currentPosition - Eigen::Vector3d({x,y,z});
-		const auto distance = diff.norm();
+		const Eigen::Vector3d currentPosition = getLocalPosition();
+		const Eigen::Vector3d goal = Eigen::Vector3d({x,y,z});
+		const auto distance = (currentPosition - goal).norm();
 
 		if (distance < distance_threshold) {
 		break;
@@ -593,3 +608,53 @@ double Drone::getTime() {
 void Drone::log(const std::string &info) {
 	RCLCPP_INFO(this->px4_node_->get_logger(), info.c_str());
 }
+
+/*
+	Image functions
+*/
+
+cv_bridge::CvImagePtr& Drone::getHorizontalImage() {
+	return horizontal_cv_ptr_;
+}
+
+cv_bridge::CvImagePtr& Drone::getVerticalImage() {
+	return vertical_cv_ptr_;
+
+}
+
+void Drone::create_image_publisher(const std::string& topic_name) {
+	rclcpp::QoS qos_profile(10);
+	qos_profile.best_effort();
+
+	image_publishers_.emplace(
+		topic_name,
+		this->px4_node_->create_publisher<sensor_msgs::msg::Image>(
+			topic_name, qos_profile)
+	);
+
+}
+
+void Drone::publish_image(const std::string& topic_name, const cv_bridge::CvImagePtr& cv_ptr) {
+	sensor_msgs::msg::Image::SharedPtr msg = cv_ptr->toImageMsg();
+	this->image_publishers_.at(topic_name)->publish(*msg.get());
+}
+
+void Drone::publish_image(const std::string& topic_name, const cv::Mat& image) {
+
+    std::string encoding = encoding_map_[cv::typeToString(image.type())];
+
+	sensor_msgs::msg::Image::SharedPtr msg =
+            cv_bridge::CvImage(std_msgs::msg::Header(), encoding, image)
+                .toImageMsg();
+	this->image_publishers_.at(topic_name)->publish(*msg.get());
+}
+
+std::unordered_map<std::string, std::string> Drone::encoding_map_ = {
+	{"CV_8UC1", "mono8"},
+	{"CV_8UC3", "bgr8"},
+	{"CV_16UC1", "mono16"},
+	{"CV_16UC3", "bgr16"},
+	{"CV_32FC1", "32FC1"},
+	{"CV_32FC3", "32FC3"}	
+};
+

@@ -15,6 +15,10 @@ public:
         this->blackboard_set<float>("angular", 1.0);
         this->blackboard_set<Drone>("drone", new Drone());
 
+        Drone* drone = blackboard_get<Drone>("drone");
+        drone->create_image_publisher("/transformed_vertical_image");
+
+
         this->add_state("TAKEOFF", std::make_unique<TakeoffState>());
         this->add_transitions("TAKEOFF", {{"TAKEOFF COMPLETED", "CIRCLE"},{"SEG FAULT", "ERROR"}});
             
