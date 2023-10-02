@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(frtl_2023_demo)
+project(frtl_2023_fase3)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
