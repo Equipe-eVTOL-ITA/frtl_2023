@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>frtl_2023_fase4</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="daniel.sahadi@yahoo.com.br">Daniel da Silveira Sahadi</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>frtl_2023_drone</depend>
+  <depend>fsm</depend>
+  <depend>Eigen3</depend>
+  <depend>rclcpp</depend>
+  <depend>opencv2</depend>
+  <depend>nlohmann_json</depend>
+  <depend>px4_msgs</depend>
+  <depend>tf2</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
