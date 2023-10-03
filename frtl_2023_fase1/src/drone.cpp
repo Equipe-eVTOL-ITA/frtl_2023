@@ -5,14 +5,14 @@
 
 #include <iostream>
 #include <string>
-#include "../../include/cv_utils/videoTest.hpp"
-#include "../../include/cv_utils/ColorBoxFilter.hpp"
-#include "../../include/cv_utils/ContourExtractor.hpp"
+#include "cv_utils/videoTest.hpp"
+#include "cv_utils/ColorBoxFilter.hpp"
+#include "cv_utils/ContourExtractor.hpp"
 // remover elipses concentricas?
-#include "../../include/cv_utils/EllipseFitter.hpp"
-#include "../../include/cv_utils/PolygonIdentifier.hpp"
-#include "../../include/cv_utils/PointCloudTracker.hpp"
-#include "../../include/cv_utils/ImageToWorldConverter.hpp"
+#include "cv_utils/EllipseFitter.hpp"
+#include "cv_utils/PolygonIdentifier.hpp"
+#include "cv_utils/PointCloudTracker.hpp"
+#include "cv_utils/ImageToWorldConverter.hpp"
 #include <opencv2/core.hpp>
 // transformar displayable result em arquivo à parte
 /*
@@ -40,26 +40,28 @@ public:
 
 class NodeFSM : public rclcpp::Node {
 public:
-    NodeFSM() : rclcpp::Node("demo_node");
-    new Drone() drone;
+    Drone drone;
+    NodeFSM() : rclcpp::Node("demo_node") {
+        drone.create_image_publisher("/my_image");
+
+    }
     execute(){
         auto extrac_img = drone.getVerticalImage();
-
-        cv::imwrite("yellowboxfilter.jpg", yellowFilter(extrac_img->image));
+        drone.publish_image("/my_image", yellowFilter(extrac_img->image) )
+        //cv::imwrite("yellowboxfilter.jpg", yellowFilter(extrac_img->image));
         
     }
 };
 
 int main(int argc, const char * argv[]){
     rclcpp::init(argc,argv);
-
+    ~
     auto my_node = std::make_shared<NodeFSM>();
     while (rclcpp::ok()) {
         my_node.execute();
         rclcpp::spin_some(my_node);
     }
 
-    std::cout << my_node->my_fsm.get_fsm_outcome() << std::endl;
     rclcpp::shutdown();
     
     return 0;
