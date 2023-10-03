@@ -3,3 +3,15 @@
 #include <Eigen/Eigen>
 #include <opencv2/highgui.hpp>
 #include <cmath>
+
+#include <iostream>
+#include <string>
+#include "../../include/cv_utils/videoTest.hpp"
+#include "../../include/cv_utils/ColorBoxFilter.hpp"
+#include "../../include/cv_utils/ContourExtractor.hpp"
+// remover elipses concentricas?
+#include "../../include/cv_utils/EllipseFitter.hpp"
+#include "../../include/cv_utils/PolygonIdentifier.hpp"
+#include "../../include/cv_utils/PointCloudTracker.hpp"
+#include "../../include/cv_utils/ImageToWorldConverter.hpp"
+#include <opencv2/core.hpp>
