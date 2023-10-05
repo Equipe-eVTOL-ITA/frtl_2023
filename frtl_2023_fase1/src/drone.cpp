@@ -5,26 +5,17 @@
 
 #include <iostream>
 #include <string>
-#include "cv_utils/videoTest.hpp"
-#include "cv_utils/ColorBoxFilter.hpp"
-#include "cv_utils/ContourExtractor.hpp"
-// remover elipses concentricas?
-#include "cv_utils/EllipseFitter.hpp"
-#include "cv_utils/PolygonIdentifier.hpp"
-#include "cv_utils/PointCloudTracker.hpp"
-#include "cv_utils/ImageToWorldConverter.hpp"
-#include <opencv2/core.hpp>
 // transformar displayable result em arquivo à parte
 /*
 landing pad 1: 31, 90, 88, 62, 223, 255 ou 27, 61, 101, 75, 255, 255
 landing pad 2, 3, 4, 5: 17, 49, 131, 96, 255, 255
 */
-ColorBoxFilter yellowFilter(27, 61, 101, 75, 255, 255);
-ContourExtractor extractor(100);
-EllipseFitter fitter(1500);
-PolygonIdentifier plusId(12, 1, false, 1.0 / 16.0);
-PolygonIdentifier rectId(4, 1, true, 1.0 / 15.0);
-PointCloudTracker tracker(0.9, 5, 50);
+//ColorBoxFilter yellowFilter(27, 61, 101, 75, 255, 255);
+//ContourExtractor extractor(100);
+//EllipseFitter fitter(1500);
+//PolygonIdentifier plusId(12, 1, false, 1.0 / 16.0);
+//PolygonIdentifier rectId(4, 1, true, 1.0 / 15.0);
+//PointCloudTracker tracker(0.9, 5, 50);
 
 /*
 class node : rclcpp::Node() 
@@ -45,21 +36,26 @@ public:
         drone.create_image_publisher("/my_image");
 
     }
-    execute(){
+    void execute(){
         auto extrac_img = drone.getVerticalImage();
-        drone.publish_image("/my_image", yellowFilter(extrac_img->image) )
-        //cv::imwrite("yellowboxfilter.jpg", yellowFilter(extrac_img->image));
+        drone.publish_image("/my_image", extrac_img);
+        //cv::imwrite("image.jpg", extrac_img->image);
         
+        //cv::imwrite("yellowboxfilter.jpg", yellowFilter(extrac_img->image));
+        //yellowFilter.apply(extrac_img->image)
     }
 };
 
 int main(int argc, const char * argv[]){
+    std::cout << "ta funcionando\n";
     rclcpp::init(argc,argv);
-    ~
+    
+    rclcpp::Rate loop_rate(60);
     auto my_node = std::make_shared<NodeFSM>();
     while (rclcpp::ok()) {
-        my_node.execute();
+        my_node->execute();
         rclcpp::spin_some(my_node);
+        loop_rate.sleep();
     }
 
     rclcpp::shutdown();
