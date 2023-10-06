@@ -11,13 +11,16 @@ public:
 
     void on_enter(fsm::Blackboard &blackboard) override {
         Drone* drone = blackboard.get<Drone>("drone");
+        time_limit_ = blackboard.get<double>("time limit");
+
+        std::vector<Point3f>> bases = *blackboard.get<std::vector<Point3f>>("Bases", bases);
 
         if (drone == nullptr) return;
         drone->log("Entering Finding Bases state.");
 
         this->start_time_ = this->drone_->getTime();
 
-        this->cv_img_mode = *blackboard.get<std::string>("Horizontal or Vertical CV");
+        this->cv_img_mode_ = *blackboard.get<std::string>("Horizontal or Vertical CV");
     }
 
     std::string act(fsm::Blackboard &blackboard) override {
@@ -31,27 +34,31 @@ public:
         cv_bridge::CvImagePtr ver_ptr = drone->getVerticalImage();
         cv_bridge::CvImagePtr hor_ptr = drone->getHorizontalImage();
         
-
         
+        
+        baseDetection(ver_prt->image);
+        ImgToWorld();
+        FindCoordinates();
 
-
-
-
-        /*
-        if (basesFound > 0 && timedOut == true)
+        if (this->did_detect_base_ == true && duration > time_limit_){
+            drone->log("Found " + std::string(num_bases) + " bases.");
             return "FOUND BASES";
-        else if(basesFound = 0 && timedOut == true)
+        }
+        else if(this->did_detect_base_ == false && duration > time_limit_){
+            drone->log("Timed out searching for bases.");
             return "TIMED OUT";
-
-        // Entrar em modo de procura das bases
+        }            
 
         return "";
-        */
-        return "FOUND BASES";
     }
 
     
 private:
     double start_time_;
-    std::string cv_img_mode;
+    std::string cv_img_mode_;
+    bool did_detect_base_;
+    double time_limit_;
+    std::vector<cv::Point3f>& object_points_;
+    std::vector<cv::Point2f>& image_points_,
+
 };

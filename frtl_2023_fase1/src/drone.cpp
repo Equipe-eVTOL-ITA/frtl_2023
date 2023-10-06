@@ -9,12 +9,43 @@
 #include <memory>
 #include <iostream>
 
+
+struct Base{
+    cv::Point3f coordinates;
+    bool found;
+    bool visited;
+}
+
 class Fase1FSM : public fsm::FSM {
 public:
     Fase1FSM() : fsm::FSM({"ERROR", "FINISHED"}) {
 
+        // Matriz de Parametros da Camera
+        double cam_data[][3] = {{1.0, 2.0, 3.0},
+                        {4.0, 5.0, 6.0},
+                        {7.0, 8.0, 9.0}};
+        cv::Mat cam_matrix(3, 3, CV_64F, cam_data);
+
+        // Vetores de pontos da cruz
+        std::vector<cv::Point3f> objectPoints;
+        objectPoints.push_back(cv::Point3f(0, 0, 0));
+        objectPoints.push_back(cv::Point3f(4.0f, 5.0f, 6.0f));
+        objectPoints.push_back(cv::Point3f(7.0f, 8.0f, 9.0f));
+
+        // Declaracao das bases
+        std::vector<Base> bases;
+        for(int i=0; i<5; i++){
+            bases.push_back({{0, 0, 0}, false, false});
+        }
+        
+        // BLACKBOARD
         this->blackboard_set<Drone>("drone", new Drone());
-        this->blackboard_set<cv::Mat>("")
+        this->blackboard_set<cv::Mat>("Camera Parameters", cam_matrix);
+        // TIME LIMIT = 30s aqui
+        this->blackboard_set<double>("time limit", 30);
+        this->blackboard_set<std::vector<cv::Point3f>>("Bases", bases);
+
+
 
         Drone* drone = blackboard_get<Drone>("drone");
         drone->create_image_publisher("/transformed_vertical_image");
@@ -33,7 +64,7 @@ public:
 
 
 
-        
+
         this->add_transitions("FINDING BASES", {{"FOUND BASES", "VISIT BASE"},{"SEG FAULT", "ERROR"}});
         this->add_transitions("VISIT BASE", {{"ARRIVED AT BASE", "LANDING"},{"SEG FAULT", "ERROR"}});
         this->add_transitions("LANDING", {{"LANDED", "TAKEOFF"},{"SEG FAULT", "ERROR"}});
@@ -72,65 +103,3 @@ int main(int argc, const char * argv[]){
 }
 
 
-
-
-
-/*
-#include "fase1/drone.hpp"
-#include <rclcpp/rclcpp.hpp>
-#include <memory>
-#include <iostream>
-
-#include <iostream>
-#include <string>
-
-
-
-class node : rclcpp::Node() 
-public:
-    execute() {
-
-        auto cv_br = drone.getVerticalCamera()
-
-        extract_edges(out, cv_br.image)
-
-    }
-
-
-class NodeFSM : public rclcpp::Node {
-public:
-    Drone drone;
-    NodeFSM() : rclcpp::Node("fase1_node") {
-        drone.create_image_publisher("/my_image");
-
-    }
-    void execute(){
-        auto extrac_img = drone.getVerticalImage();
-        drone.publish_image("/my_image", extrac_img);
-        //cv::imwrite("image.jpg", extrac_img->image);
-        
-        //cv::imwrite("yellowboxfilter.jpg", yellowFilter(extrac_img->image));
-        //yellowFilter.apply(extrac_img->image)
-    }
-};
-
-int main(int argc, const char * argv[]){
-    std::cout << "ta funcionando\n";
-    rclcpp::init(argc,argv);
-    
-    rclcpp::Rate loop_rate(60);
-    auto my_node = std::make_shared<NodeFSM>();
-    while (rclcpp::ok()) {
-        my_node->execute();
-        rclcpp::spin_some(my_node);
-        loop_rate.sleep();
-    }
-
-    rclcpp::shutdown();
-    
-    return 0;
-    //cv::Mat rgb = cv::imread("../../fase1/marco_pouso.jpg");
-    //cv::imwrite("../../fase1/yellowboxfilter.jpg", yellowFilter(rgb));
-}
-
-*/
