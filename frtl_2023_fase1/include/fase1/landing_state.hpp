@@ -20,8 +20,10 @@ public:
 
         drone->land();
 
+        /*
         if (pousou na base)
             return "LANDED";
-        
+        */
+       return "LANDED";
     }
 };

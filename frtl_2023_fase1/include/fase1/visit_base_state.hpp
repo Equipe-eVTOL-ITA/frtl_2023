@@ -20,8 +20,10 @@ public:
 
         // Enviar o drone para a Base
 
+        /*
         if (chegou na base)
             return "ARRIVED AT BASE";
-        
+        */
+       return "ARRIVED AT BASE";
     }
 };

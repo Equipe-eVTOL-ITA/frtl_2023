@@ -5,7 +5,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
+ find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(fsm REQUIRED)
 find_package(frtl_2023_drone REQUIRED)
@@ -34,18 +34,6 @@ ament_target_dependencies(drone
   frtl_2023_cv_utils
   Eigen3
 )
-
-#add_executable(circle
-#  src/examples/circle.cpp
-#)
-
-#ament_target_dependencies(circle
-#  rclcpp
-#  fsm
-#  frtl_2023_drone
-#  Eigen3
-#)
-
 
 install(
   TARGETS

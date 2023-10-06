@@ -34,10 +34,15 @@ public:
         Eigen::Vector3d pos  = drone->getLocalPosition(),
                         goal = Eigen::Vector3d({this->initial_x, this->initial_y, *z});
 
+        
+        /*
         if ((pos-goal).norm() < 0.10 && visited_bases == known_bases)
             return "FINISHED KNOWN BASES";
         else if ((pos-goal).norm() < 0.10 && visited_bases < known_bases)
             return "NEXT BASE";
+        */
+        if ((pos-goal).norm() < 0.10)
+            return "FINISHED KNOWN BASES";
 
         drone->setLocalPosition(this->initial_x, this->initial_y, *z, 0.0);
 
