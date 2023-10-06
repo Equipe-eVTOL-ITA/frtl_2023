@@ -14,11 +14,13 @@ public:
     Fase1FSM() : fsm::FSM({"ERROR", "FINISHED"}) {
 
         this->blackboard_set<Drone>("drone", new Drone());
+        this->blackboard_set<cv::Mat>("")
 
         Drone* drone = blackboard_get<Drone>("drone");
         drone->create_image_publisher("/transformed_vertical_image");
         drone->create_image_publisher("/transformed_vertical_image");
 
+        this->blackboard_set<float>("Horizontal or Vertical CV", "vertical");
 
         this->add_state("INITIAL TAKEOFF", std::make_unique<InitialTakeoffState>());
         this->add_state("FINDING BASES", std::make_unique<FindingBasesState>());
@@ -28,13 +30,17 @@ public:
         this->add_state("LANDING", std::make_unique<LandingState>());
 
         this->add_transitions("INITIAL TAKEOFF", {{"INITIAL TAKEOFF COMPLETED", "FINDING BASES"},{"SEG FAULT", "ERROR"}});
+
+
+
+        
         this->add_transitions("FINDING BASES", {{"FOUND BASES", "VISIT BASE"},{"SEG FAULT", "ERROR"}});
         this->add_transitions("VISIT BASE", {{"ARRIVED AT BASE", "LANDING"},{"SEG FAULT", "ERROR"}});
         this->add_transitions("LANDING", {{"LANDED", "TAKEOFF"},{"SEG FAULT", "ERROR"}});
         //Transicao da Takeoff
         this->add_transitions("TAKEOFF", {{"NEXT BASE", "VISIT BASE"},{"SEG FAULT", "ERROR"}});
         this->add_transitions("TAKEOFF", {{"FINISHED KNOWN BASES", "FINDING BASES"},{"SEG FAULT", "ERROR"}});
-        // Fim da takeoff
+        // -------------------
         this->add_transitions("RETURN HOME", {{"RETURNED HOME", "FINISHED"},{"SEG FAULT", "ERROR"}});
 
         //TRANSICOES DE TIME OUT

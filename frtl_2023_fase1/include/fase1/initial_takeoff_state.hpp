@@ -39,10 +39,10 @@ public:
 
         drone->setLocalPosition(this->initial_x, this->initial_y, *z, 0.0);
 
-        cv_bridge::CvImagePtr cv_ptr = drone->getVerticalImage();
-        cv::Mat edged_image;
-        cv::Canny(cv_ptr->image, edged_image, 100, 200);
-        drone->publish_image("/transformed_vertical_image", edged_image);
+        //cv_bridge::CvImagePtr cv_ptr = drone->getVerticalImage();
+        //cv::Mat edged_image;
+        //cv::Canny(cv_ptr->image, edged_image, 100, 200);
+        //drone->publish_image("/transformed_vertical_image", edged_image);
         // drone-> publish
         
         return "";
