@@ -18,6 +18,7 @@ public:
         Drone* drone = blackboard.get<Drone>("drone");
         if (drone == nullptr) return "SEG FAULT";
 
+        /*
         if (basesFound > 0 && timedOut == true)
             return "FOUND BASES";
         else if(basesFound = 0 && timedOut == true)
@@ -26,5 +27,7 @@ public:
         // Entrar em modo de procura das bases
 
         return "";
+        */
+        return "FOUND BASES";
     }
 };

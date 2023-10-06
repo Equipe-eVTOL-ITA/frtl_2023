@@ -5,7 +5,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
- find dependencies
+#find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(fsm REQUIRED)
 find_package(frtl_2023_drone REQUIRED)
@@ -22,10 +22,10 @@ add_executable(drone
   src/drone.cpp
 )
 
-target_include_directories(drone PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+#target_include_directories(drone PUBLIC
+#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#  $<INSTALL_INTERFACE:include>
+#)
 
 ament_target_dependencies(drone
   rclcpp

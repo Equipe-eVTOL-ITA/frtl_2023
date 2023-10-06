@@ -22,9 +22,6 @@ public:
         this->initial_y = pos[1];
     }
 
-    auto cv_br = drone.getVerticalImage();
-    drone.publish("/transfomed_cv_vertical", cv_br->image)
-
     std::string act(fsm::Blackboard &blackboard) override {
         
 

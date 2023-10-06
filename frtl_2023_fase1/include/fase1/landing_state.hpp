@@ -2,9 +2,9 @@
 #include "drone/Drone.hpp"
 #include <Eigen/Eigen>
 
-class LandState : public fsm::State {
+class LandingState : public fsm::State {
 public:
-    LandState() : fsm::State() {}
+    LandingState() : fsm::State() {}
 
     void on_enter(fsm::Blackboard &blackboard) override {
         Drone* drone = blackboard.get<Drone>("drone");

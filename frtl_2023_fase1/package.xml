@@ -10,6 +10,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>frtl_2023_drone</depend>
+  <depend>frtl_2023_cv_utils</depend>
   <depend>fsm</depend>
   <depend>Eigen3</depend>
   <depend>rclcpp</depend>
