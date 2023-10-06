@@ -34,6 +34,7 @@ add_library(frtl_2023_cv_utils_lib SHARED
   src/ImageToWorldConverter.cpp
   src/PointCloudTracker.cpp
   src/PolygonIdentifier.cpp
+  src/ImgToWorld.cpp
 )
 ament_target_dependencies(frtl_2023_cv_utils_lib OpenCV Eigen3)
 target_link_libraries(frtl_2023_cv_utils_lib nlohmann_json)
