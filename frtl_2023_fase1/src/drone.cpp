@@ -21,9 +21,9 @@ public:
     Fase1FSM() : fsm::FSM({"ERROR", "FINISHED"}) {
 
         // Matriz de Parametros da Camera
-        double cam_data[][3] = {{1.0, 2.0, 3.0},
-                        {4.0, 5.0, 6.0},
-                        {7.0, 8.0, 9.0}};
+        double cam_data[][3] = {{524.426799, 0.000000, 306.771757},
+                        {0.000000, 526.930449, 193.839579},
+                        {0.000000,0.000000, 1.000000}};
         cv::Mat cam_matrix(3, 3, CV_64F, cam_data);
 
         // Vetores de pontos da cruz
@@ -34,6 +34,7 @@ public:
 
         // Declaracao das bases
         std::vector<Base> bases;
+        bases.push_back({{0, 0, 0}, true, true});
         for(int i=0; i<5; i++){
             bases.push_back({{0, 0, 0}, false, false});
         }
