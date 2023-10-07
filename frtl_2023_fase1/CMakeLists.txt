@@ -18,16 +18,28 @@ find_package(nlohmann_json CONFIG REQUIRED)
 
 include_directories(include)
 
-add_executable(drone
-  src/drone.cpp
-)
-
 #target_include_directories(drone PUBLIC
 #  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 #  $<INSTALL_INTERFACE:include>
 #)
 
-ament_target_dependencies(drone
+add_executable(fase1
+  src/drone.cpp
+)
+
+ament_target_dependencies(fase1
+  rclcpp
+  fsm
+  frtl_2023_drone
+  frtl_2023_cv_utils
+  Eigen3
+)
+
+add_executable(fase1_safe
+  src/fase1_safe.cpp
+)
+
+ament_target_dependencies(fase1_safe
   rclcpp
   fsm
   frtl_2023_drone
@@ -38,7 +50,8 @@ ament_target_dependencies(drone
 install(
   TARGETS
     
-    drone
+    fase1
+    fase1_safe
   DESTINATION lib/${PROJECT_NAME}
 )
 
