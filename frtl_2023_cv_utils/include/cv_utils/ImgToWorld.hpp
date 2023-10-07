@@ -5,7 +5,7 @@
 
 #include <opencv2/opencv.hpp>
 
-void solvePnPExample(
+void ImgToWorld(
     const std::vector<cv::Point3f>& objectPoints,
     const std::vector<cv::Point2f>& imagePoints,
     const cv::Mat& cameraMatrix,
