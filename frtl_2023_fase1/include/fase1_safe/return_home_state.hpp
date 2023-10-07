@@ -13,7 +13,8 @@ public:
 
         home_pos_ = *blackboard.get<Eigen::Vector3d>("Home Position");
         Eigen::Vector3d pos = drone_->getLocalPosition();
-        initial_w_ = pos[3];
+        Eigen::Vector3d orient = drone_->getOrientation();
+        initial_w_ = orient[2];
         initial_h_ = pos[2];
     }
 

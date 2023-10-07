@@ -16,9 +16,10 @@ public:
         bases_ = blackboard.get<std::vector<Base>>("Bases");
         
         Eigen::Vector3d pos = drone_->getLocalPosition();
+        Eigen::Vector3d orient = drone_->getOrientation();
         this->initial_x_ = pos[0];
         this->initial_y_ = pos[1];
-        this->initial_w_ = pos[3];
+        this->initial_w_ = orient[2];
         this->target_h_ = *blackboard.get<float>("Height of Base");
     }
 

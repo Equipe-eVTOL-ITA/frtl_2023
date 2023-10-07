@@ -22,9 +22,10 @@ public:
         drone_->armSync();
         
         Eigen::Vector3d pos = drone_->getLocalPosition();
+        Eigen::Vector3d orient = drone_->getOrientation();
         this->initial_x_ = pos[0];
         this->initial_y_ = pos[1];
-        this->initial_w_ = pos[3];
+        this->initial_w_ = orient[2];
     }
 
     std::string act(fsm::Blackboard &blackboard) override {
@@ -43,6 +44,7 @@ public:
         
         return "";
     }
+    
 private:
     float initial_x_, initial_y_, initial_w_;
     float* h_;

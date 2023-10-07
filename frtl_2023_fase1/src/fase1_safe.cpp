@@ -18,7 +18,7 @@ public:
         
         // BLACKBOARD
         this->blackboard_set<Drone>("drone", new Drone());
-        this->blackboard_set<float>("height", -1.5f);
+        this->blackboard_set<float>("height", -2.5f);
         this->blackboard_set<std::vector<Base>>("Bases", bases);
 
         Drone* drone = blackboard_get<Drone>("drone");
