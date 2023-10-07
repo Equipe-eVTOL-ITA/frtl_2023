@@ -2,16 +2,10 @@
 #include "fase1_safe/return_home_state.hpp"
 #include "fase1_safe/visit_base_state.hpp"
 #include "fase1_safe/landing_state.hpp"
-
+#include "fase1_safe/base.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
 #include <iostream>
-
-
-struct Base{
-    cv::Point3f coordinates;
-    bool visited;
-}
 
 class Fase1SafeFSM : public fsm::FSM {
 public:
@@ -25,7 +19,7 @@ public:
         // BLACKBOARD
         this->blackboard_set<Drone>("drone", new Drone());
         this->blackboard_set<float>("height", -1.5f);
-        this->blackboard_set<std::vector<Base>("Bases", bases);
+        this->blackboard_set<std::vector<Base>>("Bases", bases);
 
         Drone* drone = blackboard_get<Drone>("drone");
         drone->create_image_publisher("/transformed_vertical_image");
@@ -33,8 +27,8 @@ public:
 
         this->add_state("TAKEOFF", std::make_unique<TakeoffState>());
         this->add_state("RETURN HOME", std::make_unique<ReturnHomeState>());
-        this->add_state("VISIT BASE", std::make_unique<VisitFirstBaseState>());
-        this->add_state("LANDING", std::make_unique<LandingState>());
+        this->add_state("VISIT BASE", std::make_unique<VisitBaseState>());
+        this->add_state("LAND", std::make_unique<LandingState>());
 
         this->add_transitions("TAKEOFF", {{"VISIT NEXT BASE", "VISIT BASE"},{"SEG FAULT", "ERROR"}});
         this->add_transitions("TAKEOFF", {{"FINISHED BASES", "RETURN HOME"},{"SEG FAULT", "ERROR"}});
@@ -54,7 +48,7 @@ public:
 
 int main(int argc, const char * argv[]){
     rclcpp::init(argc,argv);
-
+    std::cout << "Iniciou.";
     auto my_node = std::make_shared<NodeFSM>();
     while (rclcpp::ok() && !my_node->my_fsm.is_finished()) {
         my_node->my_fsm.execute();

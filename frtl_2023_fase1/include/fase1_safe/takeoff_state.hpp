@@ -1,5 +1,6 @@
 #include "fsm/fsm.hpp"
 #include "drone/Drone.hpp"
+#include "fase1_safe/base.hpp"
 #include <Eigen/Eigen>
 
 #include <opencv2/highgui.hpp>
@@ -11,7 +12,7 @@ public:
     void on_enter(fsm::Blackboard &blackboard) override {
 
         drone_ = blackboard.get<Drone>("drone");
-        if (drone_ == nullptr) return "ERROR";
+        if (drone_ == nullptr) return;
         drone_->log("Taking off.");
 
         bases_ = blackboard.get<std::vector<Base>>("Bases");
@@ -28,16 +29,17 @@ public:
 
     std::string act(fsm::Blackboard &blackboard) override {
 
+        (void)blackboard;
         Eigen::Vector3d pos  = drone_->getLocalPosition(),
                         goal = Eigen::Vector3d({this->initial_x_, this->initial_y_, *h_});
 
         if ((pos-goal).norm() < 0.10){
-            if (*bases_[0].visited && *bases_[1].visited)
+            if ((*bases_)[0].visited && (*bases_)[1].visited)
                 return "FINISHED BASES";
             return "VISIT NEXT BASE";
         }
 
-        drone_->setLocalPosition(this->initial_x, this->initial_y, *h_, initial_w_);
+        drone_->setLocalPosition(this->initial_x_, this->initial_y_, *h_, initial_w_);
         
         return "";
     }

@@ -23,17 +23,17 @@ include_directories(include)
 #  $<INSTALL_INTERFACE:include>
 #)
 
-add_executable(fase1
-  src/drone.cpp
-)
+#add_executable(fase1
+#src/fase1.cpp
+#)
 
-ament_target_dependencies(fase1
-  rclcpp
-  fsm
-  frtl_2023_drone
-  frtl_2023_cv_utils
-  Eigen3
-)
+#ament_target_dependencies(fase1
+#  rclcpp
+#  fsm
+#  frtl_2023_drone
+#  frtl_2023_cv_utils
+#  Eigen3
+#)
 
 add_executable(fase1_safe
   src/fase1_safe.cpp
@@ -50,7 +50,7 @@ ament_target_dependencies(fase1_safe
 install(
   TARGETS
     
-    fase1
+
     fase1_safe
   DESTINATION lib/${PROJECT_NAME}
 )
