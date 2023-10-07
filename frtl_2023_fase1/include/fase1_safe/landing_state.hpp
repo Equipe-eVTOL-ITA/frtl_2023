@@ -7,41 +7,6 @@ public:
     LandingState() : fsm::State() {}
 
     void on_enter(fsm::Blackboard &blackboard) override {
-        Drone* drone = blackboard.get<Drone>("drone");
-        if (drone == nullptr) return;
-        drone->log("Entering landing state.");
-
-        Eigen::Vector3d pos = drone->getLocalPosition();
-        this->initial_h_ = pos[2];
-        this->initial_w_ = pos[3];
-    }
-
-    std::string act(fsm::Blackboard &blackboard) override {
-        
-
-        Drone* drone = blackboard.get<Drone>("drone");
-        if (drone == nullptr) return "SEG FAULT";
-
-        drone->land();
-
-        /*
-        if (pousou na base)
-            return "LANDED";
-        */
-       return "LANDED";
-    }
-};
-
-
-#include "fsm/fsm.hpp"
-#include "drone/Drone.hpp"
-#include <Eigen/Eigen>
-
-class LandingState : public fsm::State {
-public:
-    LandingState() : fsm::State() {}
-
-    void on_enter(fsm::Blackboard &blackboard) override {
 
         drone_ = blackboard.get<Drone>("drone");
         if (drone_ == nullptr) return "ERROR";
