@@ -7,43 +7,39 @@ public:
     ReturnHomeState() : fsm::State() {}
 
     void on_enter(fsm::Blackboard &blackboard) override {
-        Drone* drone = blackboard.get<Drone>("drone");
-        if (drone == nullptr) return;
-        drone->log("Entering Going to Home state.");
+        drone_ = blackboard.get<Drone>("drone");
+        if (drone_ == nullptr) return "ERROR";
+        drone_->log("Entering Going to Home state.");
 
         home_pos_ = blackboard.get<Eigen::Vector3d>("Home Position");
+        Eigen::Vector3d pos = drone_->getLocalPosition();
         initial_w_ = pos[3];
+        initial_h_ = pos[2];
     }
 
     void on_exit(fsm::Blackboard &blackboard) override {
         (void)blackboard;
 
-        drone->setLocalPositionSync(home_pos[0], home_pos[1], home_pos[2], initial_w_)
+        Eigen::Vector3d pos = drone_->getLocalPosition();
+        drone_->setLocalPositionSync(pos[0], pos[1], home_pos[2], initial_w_);
+        
+        drone_->land();
+        drone_->disarmSync();
     }
     std::string act(fsm::Blackboard &blackboard) override {
     
-        Eigen::Vector3d pos  = drone->getLocalPosition(),
-                        goal = Eigen::Vector3d({this->initial_x_, this->initial_y_, *h});
+        Eigen::Vector3d pos = drone_->getLocalPosition();
         
-  
+        
+        if ((pos-home_pos_).norm() < 0.10)
+            return "RETURNED HOME";
 
-        drone->setLocalPositionSync(home_pos[0], home_pos[1], home_pos[2], initial_w_)
-
-        return "RETURNED HOME";
-
-
-                if ((pos-goal).norm() < 0.10){
-            if (*bases[0].visited && *bases[1].visited)
-                return "FINISHED KNOWN BASES";
-            return "VISIT NEXT BASE";
-        }
-
-        drone->setLocalPosition(this->initial_x, this->initial_y, *h, initial_w_);
+        drone_->setLocalPosition(home_pos[0], home_pos[1], initial_h_, initial_w_);
         
         return "";
-        
     }
 private:
-    float initial_w_;
+    float initial_w_, initial_h_;
     Eigen::Vector3d home_pos_;
+    Drone* drone_;
 };
