@@ -44,7 +44,7 @@ public:
         this->blackboard_set<cv::Mat>("Camera Parameters", cam_matrix);
         // TIME LIMIT = 30s aqui
         this->blackboard_set<double>("time limit", 30);
-        this->blackboard_set<std::vector<cv::Point3f>>("Bases", bases);
+        this->blackboard_set<std::vector<Base>>("Bases", bases);
 
 
 
