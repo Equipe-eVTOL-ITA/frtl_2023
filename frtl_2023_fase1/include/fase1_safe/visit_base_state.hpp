@@ -8,7 +8,7 @@ public:
     VisitBaseState() : fsm::State() {}
 
     void on_enter(fsm::Blackboard &blackboard) override {
-        Drone* drone_ = blackboard.get<Drone>("drone");
+        drone_ = blackboard.get<Drone>("drone");
         if (drone_ == nullptr) return;
         drone_->log("Entering Visit Base state.");
         
@@ -39,15 +39,13 @@ public:
     }
 
     std::string act(fsm::Blackboard &blackboard) override {
-        drone_->log("blah");
         (void)blackboard;
-        drone_->log("blah2");
         Eigen::Vector3d pos  = drone_->getLocalPosition(),
                         goal = Eigen::Vector3d({(((*bases_)[index_base_to_visit_]).coordinates).x, 
                                                 (((*bases_)[index_base_to_visit_]).coordinates).y,
                                                 initial_h_});
-        drone_->log("blah3");
-        drone_->log(std::to_string(goal.x()) + " " + std::to_string(goal.y()) + " "  + std::to_string(goal.z()));
+
+        drone_->log(std::to_string(pos.x()) + " " + std::to_string(pos.y()) + " "  + std::to_string(pos.z()));
         if ((pos-goal).norm() < 0.10){
             if ((*bases_)[0].visited && (*bases_)[1].visited)
                 return "FINISHED BASES";

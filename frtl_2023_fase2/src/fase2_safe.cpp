@@ -1,15 +1,15 @@
-#include "fase1_safe/takeoff_state.hpp"
-#include "fase1_safe/return_home_state.hpp"
-#include "fase1_safe/visit_base_state.hpp"
-#include "fase1_safe/read_qrcode_state.hpp"
-#include "fase1_safe/base.hpp"
+#include "fase2_safe/takeoff_state.hpp"
+#include "fase2_safe/return_home_state.hpp"
+#include "fase2_safe/visit_base_state.hpp"
+#include "fase2_safe/read_qrcode_state.hpp"
+#include "fase2_safe/base.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
 #include <iostream>
 
-class Fase1SafeFSM : public fsm::FSM {
+class Fase2SafeFSM : public fsm::FSM {
 public:
-    Fase1SafeFSM() : fsm::FSM({"ERROR", "FINISHED"}) {
+    Fase2SafeFSM() : fsm::FSM({"ERROR", "FINISHED"}) {
 
         // Declaracao das bases
         std::vector<Base> bases;
@@ -32,7 +32,6 @@ public:
         this->add_state("TAKEOFF", std::make_unique<TakeoffState>());
         this->add_state("RETURN HOME", std::make_unique<ReturnHomeState>());
         this->add_state("VISIT BASE", std::make_unique<VisitBaseState>());
-        this->add_state("LAND", std::make_unique<LandingState>());
         this->add_state("READ QR CODE", std::make_unique<ReadingState>());
 
         this->add_transitions("TAKEOFF", {{"VISIT NEXT BASE", "VISIT BASE"},{"SEG FAULT", "ERROR"}});
@@ -47,8 +46,8 @@ public:
 
 class NodeFSM : public rclcpp::Node {
 public:
-    NodeFSM() : rclcpp::Node("fase1_node") {}
-    Fase1SafeFSM my_fsm;
+    NodeFSM() : rclcpp::Node("fase2_node") {}
+    Fase2SafeFSM my_fsm;
 };
 
 int main(int argc, const char * argv[]){

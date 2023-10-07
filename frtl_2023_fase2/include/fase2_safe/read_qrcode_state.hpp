@@ -1,11 +1,11 @@
 #include "fsm/fsm.hpp"
 #include "drone/Drone.hpp"
-#include "fase1_safe/base.hpp"
+#include "fase2_safe/base.hpp"
 #include <Eigen/Eigen>
 
-class LandingState : public fsm::State {
+class ReadingState : public fsm::State {
 public:
-    LandingState() : fsm::State() {}
+    ReadingState() : fsm::State() {}
 
     void on_enter(fsm::Blackboard &blackboard) override {
 
@@ -31,7 +31,8 @@ public:
 
         if ((pos-goal).norm() < 0.40){
             bool got_qrcode = false;
-            QRCodeReader(drone_->getVerticalImage(), got_qrcode);
+            //QRCodeReader(drone_->getVerticalImage(), got_qrcode);
+            got_qrcode = true;
             if (got_qrcode)
                 return "DONE READING";
         }
