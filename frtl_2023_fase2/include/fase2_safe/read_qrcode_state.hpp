@@ -2,6 +2,7 @@
 #include "drone/Drone.hpp"
 #include "fase2_safe/base.hpp"
 #include <Eigen/Eigen>
+#include "fase2_safe/qrcode_reader.hpp"
 
 class ReadingState : public fsm::State {
 public:
@@ -31,7 +32,7 @@ public:
 
         if ((pos-goal).norm() < 0.40){
             bool got_qrcode = false;
-            //QRCodeReader(drone_->getVerticalImage(), got_qrcode);
+            reader.detectQRCode(drone_->getVerticalImage(), got_qrcode);
             got_qrcode = true;
             if (got_qrcode)
                 return "DONE READING";
@@ -46,4 +47,5 @@ private:
     float initial_x_, initial_y_, initial_w_, target_h_;
     Drone* drone_;
     std::vector<Base>* bases_;
+    QRCodeReader reader;
 };

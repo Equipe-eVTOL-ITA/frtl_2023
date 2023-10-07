@@ -15,9 +15,9 @@ public:
         std::vector<Base> bases;
         bases.push_back({{1.0f, 3.5f, -0.5f}, false});
         bases.push_back({{7.0f, 1.0f, -0.5f}, false});
-        bases.push_back({{1.0f, 1.0f, 1.0f}, false});
-        bases.push_back({{1.0f, 1.0f, 1.0f}, false});
-        bases.push_back({{1.0f, 1.0f, 1.0f}, false});
+        bases.push_back({{1.5f, 2.1f, 1.0f}, false});
+        bases.push_back({{0.7f, 1.0f, 3.3f}, false});
+        bases.push_back({{1.0f, 3.2f, 1.0f}, false});
         
         // BLACKBOARD
         this->blackboard_set<Drone>("drone", new Drone());
