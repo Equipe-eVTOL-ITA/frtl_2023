@@ -13,8 +13,8 @@ public:
 
         // Declaracao das bases
         std::vector<Base> bases;
-        bases.push_back({{1.0f, 3.5f, -0.5f}, false});
-        bases.push_back({{7.0f, 1.0f, -0.5f}, false});
+        bases.push_back({{1.0f, 3.5f, -1.5f}, false});
+        bases.push_back({{7.0f, 1.0f, -1.5f}, false});
         
         // BLACKBOARD
         this->blackboard_set<Drone>("drone", new Drone());

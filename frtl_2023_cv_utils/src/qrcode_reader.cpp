@@ -1,4 +1,4 @@
-#include "qrcode_reader.hpp"
+#include "cv_utils/qrcode_reader.hpp"
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
