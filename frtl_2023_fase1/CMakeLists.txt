@@ -14,7 +14,7 @@ find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(OpenCV 4 REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
+#find_package(nlohmann_json CONFIG REQUIRED)
 
 include_directories(include)
 
@@ -43,7 +43,7 @@ ament_target_dependencies(fase1_safe
   rclcpp
   fsm
   frtl_2023_drone
-  frtl_2023_cv_utils
+  #frtl_2023_cv_utils
   Eigen3
 )
 
