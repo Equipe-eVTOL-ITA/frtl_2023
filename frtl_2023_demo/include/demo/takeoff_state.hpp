@@ -9,13 +9,13 @@ public:
     TakeoffState() : fsm::State() {}
 
     void on_enter(fsm::Blackboard &blackboard) override {
-
         Drone* drone = blackboard.get<Drone>("drone");
         if (drone == nullptr) return;
         drone->log("Taking off.");
 
         drone->toOffboardSync();
         drone->armSync();
+        drone->log("Ended armSync");
         
         Eigen::Vector3d pos = drone->getLocalPosition();
         this->initial_x = pos[0];
@@ -39,14 +39,8 @@ public:
 
         drone->setLocalPosition(this->initial_x, this->initial_y, *z, 0.0);
 
-        cv_bridge::CvImagePtr cv_ptr = drone->getVerticalImage();
-        cv::Mat edged_image;
-        cv::Canny(cv_ptr->image, edged_image, 100, 200);
-        drone->publish_image("/transformed_vertical_image", edged_image);
-        // drone-> publish
-        
         return "";
     }
-
+private:
     float initial_x, initial_y;
 };

@@ -129,7 +129,7 @@ Drone::Drone() {
 			case px4_msgs::msg::VehicleStatus::ARMING_STATE_ARMED:
 			this->arming_state_ = DronePX4::ARMING_STATE::ARMED;
 			break;
-			case px4_msgs::msg::VehicleStatus::ARMING_STATE_DISARMED:
+			case px4_msgs::msg::VehicleStatus::ARMING_STATE_STANDBY:
 			this->arming_state_ = DronePX4::ARMING_STATE::DISARMED;
 			break;
 			default:
@@ -412,10 +412,10 @@ void Drone::land()
     this->source_component_,
     this->confirmation_,
     this->from_external_,
-    0.1f,
+    0.0f,
     0,
     0,
-    1.57, // orientation
+    0, // orientation
 	0.0f,
 	0.0f  
 	);
